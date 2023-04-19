@@ -1,17 +1,9 @@
 import logging
 from pre_commit_hook.utils import exec_command
-from pre_commit_hook.errors import DiffError, UserError, RepoError, GitDirectoryError
+from pre_commit_hook.errors import UserError, RepoError, GitDirectoryError
 
 logger = logging.getLogger("git")
 
-def get_diff():
-    """
-    Returns the diff of cached modifications
-    """
-    try:
-        return exec_command(('git', 'diff', '--cached'))
-    except Exception as e:
-        raise DiffError(e)
 
 def get_user() -> str:
     """
@@ -23,12 +15,13 @@ def get_user() -> str:
     try:
         user = exec_command(('git', 'config', 'user.email'))
     except Exception as e:
-        logger.error("there was an error getting user. [error:%s]",e)
+        logger.error("there was an error getting user. [error:%s]", e)
     finally:
         user = user.strip()
         if user == "":
             raise UserError()
         return user
+
 
 def get_commit() -> str:
     """
@@ -38,16 +31,18 @@ def get_commit() -> str:
     try:
         commit = exec_command(('git', 'rev-parse', 'HEAD'))
     except Exception as e:
-        logger.error("there was an error getting commit. [error:%s]",e)
+        logger.error("there was an error getting commit. [error:%s]", e)
     finally:
         return commit.strip()
+
 
 def get_repository() -> str:
     """
     Returns the git repository
     """
     try:
-        url = prune_git_url(exec_command(('git', 'remote', 'get-url', '--push', 'origin')))
+        url = prune_git_url(exec_command(
+            ('git', 'remote', 'get-url', '--push', 'origin')))
         if url == "":
             raise RepoError(Exception("no repository URL"))
         return url

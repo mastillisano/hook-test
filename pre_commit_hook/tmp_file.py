@@ -9,7 +9,7 @@ def get_tmp_path() -> str:
     tmp_file = ".pre-commit-hook-tmp"
     return f"{git_directory}/{tmp_file}"
 
-def save_on_tmp(uuid, exit_code):
+def save_on_tmp(uuid, version, exit_code):
     """
     Create a temporal file and write down the uuid and the exit_code
     :param uuid The hook's execution id
@@ -18,11 +18,10 @@ def save_on_tmp(uuid, exit_code):
     try:
         tmp_path = get_tmp_path()
         file = open(tmp_path, 'w')
-        file.write(f"{uuid},{exit_code}")
+        file.write(f"{uuid},{version},{exit_code}")
         file.close()
     except Exception as e:
-        logger.error("there was an error writing temporal file. [uuid:%s][exit_code:%s][error:%s]",
-                uuid, exit_code, e)
+        logger.error("there was an error writing temporal file. [uuid:%s][exit_code:%s][error:%s]", uuid, exit_code, e)
 
 def clean_after():
     """

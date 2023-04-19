@@ -1,15 +1,5 @@
-import os
 import uuid
 import subprocess
-
-def is_check_skipped() -> bool:
-    """
-    Returns the value of the environmental variable skip_credentials_check
-    """
-    try:
-        return os.environ["skip_credentials_check"] == "true"
-    except KeyError:
-        return False
 
 def exec_command(cmd) -> str:
     """
