@@ -53,12 +53,12 @@ def main():
         return exit_code
 
 
-def check_dependencies():
+def check_dependencies() -> str:
     """
     Check dependencies versions
     """
     try:
-        exec_command(('go', 'list', '-m', '-f',
+        return exec_command(('go', 'list', '-m', '-f',
                       '\'{{if and (not (or .Indirect .Main)) .Update}}{{.Path}}: {{.Version}} -----> {{.Update.Version}}{{end}}\'',
                       '-u', 'all'))
     except Exception as e:
