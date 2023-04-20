@@ -7,9 +7,12 @@ def exec_command(cmd) -> str:
     :param cmd The command to be executed
     """
     print(f"Ejecutando.... ", cmd)
-    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    stdout, stderr = proc.communicate()
-    return stdout
+    # proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    proc = subprocess.run(cmd, capture_output=True, text=True)
+    #stdout, stderr = proc.communicate()
+    #return stdout
+    print(f"Salida.... ", proc.stdout)
+    return proc.stdout
 
 def generate_uuid():
     """
