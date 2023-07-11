@@ -58,7 +58,9 @@ def check_dependencies() -> str:
     Check dependencies versions
     """
     try:
-        return exec_command(('go', 'list', '-m', '-u', 'all'))
+        return exec_command(('go', 'list', '-m', '-f',
+                      '\'{{if and (not (or .Indirect .Main)) .Update}}{{.Path}}: {{.Version}} -----> {{.Update.Version}}{{end}}\'',
+                      '-u', 'all'))
     except Exception as e:
         logger.error("there was an error checking dependencies versions. [error:%s]", e)
         raise CheckDependenciesError(e)
