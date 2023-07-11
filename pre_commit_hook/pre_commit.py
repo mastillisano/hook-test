@@ -25,7 +25,7 @@ def main():
         email = get_user()
         repo = get_repository()
         result = check_dependencies()
-        if result == "":
+        if result != "":
             print(f"{soft_white}*** These dependencies must be updated ***\n\n{result}{reset}")
     except UserError as err:
         exit_code = 1
