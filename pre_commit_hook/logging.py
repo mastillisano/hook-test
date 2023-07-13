@@ -1,8 +1,8 @@
 from os import mkdir
 from logging import basicConfig, INFO
 from pre_commit_hook.colors import red,reset
-from pre_commit_hook.git import get_git_directory
 from pre_commit_hook.errors import GitDirectoryError
+from pre_commit_hook.git import get_git_directory
 
 def get_log_dir():
     git_dir = get_git_directory()
@@ -12,6 +12,7 @@ def get_log_dir():
 def get_log_path(log_dir):
     log_file = ".opsit-pre-commit-hook.log"
     return f"{log_dir}/{log_file}"
+
 
 def _set_logging_file():
     log_dir = ""
@@ -35,6 +36,7 @@ def _set_logging_file():
             raise Exception(f"Couldn't create folder: {log_dir}. Please create it manually. Reason: {e}.")
         basicConfig(filename=log_path, level=INFO, format='%(asctime)s: %(name)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S',)
         return 0
+
 
 def set_logging_file() -> int:
     try:

@@ -1,11 +1,12 @@
 import logging
 import traceback
+from pre_commit_hook.colors import red, soft_white, reset
+from pre_commit_hook.configs import version
+from pre_commit_hook.dependencies import check_dependencies
 from pre_commit_hook.errors import UserError, RepoError, CheckDependenciesError
-from pre_commit_hook.utils import generate_uuid, exec_command
 from pre_commit_hook.git import get_repository, get_user
 from pre_commit_hook.tmp_file import save_on_tmp
-from pre_commit_hook.configs import version
-from pre_commit_hook.colors import red, soft_white, reset
+from pre_commit_hook.utils import generate_uuid
 
 logger = logging.getLogger("pre-commit")
 
@@ -51,19 +52,6 @@ def main():
         if check_skipped:
             return 0
         return exit_code
-
-
-def check_dependencies() -> str:
-    """
-    Check dependencies versions
-    """
-    try:
-        return exec_command(('go', 'list', '-m', '-f',
-                      '\'{{if and (not (or .Indirect .Main)) .Update}}{{.Path}}: {{.Version}} -----> {{.Update.Version}}{{end}}\'',
-                      '-u', 'all'))
-    except Exception as e:
-        logger.error("there was an error checking dependencies versions. [error:%s]", e)
-        raise CheckDependenciesError(e)
 
 
 if __name__ == '__main__':

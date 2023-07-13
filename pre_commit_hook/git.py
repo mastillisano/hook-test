@@ -1,5 +1,5 @@
 import logging
-from pre_commit_hook.utils import exec_command
+from pre_commit_hook.utils import exec_async_command
 from pre_commit_hook.errors import UserError, RepoError, GitDirectoryError
 
 logger = logging.getLogger("git")
@@ -13,7 +13,7 @@ def get_user() -> str:
     """
     user = ""
     try:
-        user = exec_command(('git', 'config', 'user.email'))
+        user = exec_async_command(('git', 'config', 'user.email'))
     except Exception as e:
         logger.error("there was an error getting user. [error:%s]", e)
     finally:
@@ -23,26 +23,12 @@ def get_user() -> str:
         return user
 
 
-def get_commit() -> str:
-    """
-    Returns the sha of the last commit created
-    """
-    commit = ""
-    try:
-        commit = exec_command(('git', 'rev-parse', 'HEAD'))
-    except Exception as e:
-        logger.error("there was an error getting commit. [error:%s]", e)
-    finally:
-        return commit.strip()
-
-
 def get_repository() -> str:
     """
     Returns the git repository
     """
     try:
-        url = prune_git_url(exec_command(
-            ('git', 'remote', 'get-url', '--push', 'origin')))
+        url = prune_git_url(exec_async_command(('git', 'remote', 'get-url', '--push', 'origin')))
         if url == "":
             raise RepoError(Exception("no repository URL"))
         return url
@@ -63,7 +49,7 @@ def prune_git_url(url) -> str:
 
 def get_git_directory() -> str:
     try:
-        git_dir = exec_command(('git', 'rev-parse', '--git-dir'))
+        git_dir = exec_async_command(('git', 'rev-parse', '--git-dir'))
         return git_dir.strip()
     except Exception as e:
         raise GitDirectoryError(e)
